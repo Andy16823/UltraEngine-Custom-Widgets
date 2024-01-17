@@ -1,18 +1,18 @@
 #pragma once
 #include "UltraEngine.h"
+#include "IGridItem.h"
 
 using namespace UltraEngine;
+
 
 enum GridItemStyle {
 	GRID_ITEM_DEFAULT = 0,
 	GRID_ITEM_TEXT_NO_BG = 1
 };
 
-class GridItem
+class GridItem : public IGridItem
 {
 private:
-	string m_name;
-	string m_text;
 	shared_ptr<Pixmap> m_itemIcon;
 	Vec4 m_textColor = Vec4(1);
 	Vec4 m_textBackground = Vec4(0.2, 0.2, 0.2, 1);
@@ -61,22 +61,7 @@ public:
 		return m_textAlignment;
 	}
 
-	virtual void SetName(string name) {
-		m_name = name;
-	}
-
-	virtual void SetText(string text) {
-		m_text = text;
-	}
-
-	virtual string GetName() {
-		return m_name;
-	}
-
-	virtual string GetText() {
-		return m_text;
-	}
-
+	void RenderItem(GridView* gridView, int x, int y, int width, int height);
 	static shared_ptr<GridItem> CreateGridItem(string name, shared_ptr<Pixmap> itemIcon);
 	static shared_ptr<GridItem> CreateGridItem(string name, string icontPath);
 	static shared_ptr<GridItem> CreateGridItem(string name, string icontPath, GridItemStyle style);

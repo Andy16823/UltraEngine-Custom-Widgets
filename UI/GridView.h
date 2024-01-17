@@ -16,13 +16,13 @@ struct GridCell {
 class GridView : public Widget
 {
 private:
-    std::vector<shared_ptr<GridItem>> m_items;
+    std::vector<shared_ptr<IGridItem>> m_items;
     std::vector<GridCell> m_GridCells;
     int m_cellsX, m_cellsY, m_cellWidth, m_cellHeight, m_gap;
     int m_selectedIndex;
 
     void BuildGrid();
-    void RenderGridItem(shared_ptr<GridItem> item, int x, int y, int width, int height);
+    void RenderGridItem(shared_ptr<IGridItem> item, int x, int y, int width, int height);
     bool Contains(GridCell cell, int x, int y);
 public:
 
@@ -35,6 +35,10 @@ public:
         }
     }
 
+    virtual void SetGridItems(std::vector<shared_ptr<IGridItem>> items) {
+        m_items = items;
+    }
+
     virtual bool Initialize(const WString& text, const int x, const int y, const int width, const int height, shared_ptr<Widget> parent, const int style);
     virtual void Draw(const int x, const int y, const int width, const int height);
     void SetGridDefinition(int cellsX, int cellsY, int cellWidth, int cellHeight);
@@ -44,11 +48,11 @@ public:
     void AddBlockExt(const WString& text, const iVec2& position, const iVec2& size, const Vec4& color, const TextAlignment alignment = TextAlignment::TEXT_LEFT);
     void AddBlockExt(shared_ptr<Pixmap> pixmap, const iVec2& position, const Vec4& color = 1.0f);
     void AddBlockExt(shared_ptr<Pixmap> pixmap, const iVec2& position, const iVec2& size, const Vec4& color = 1.0f);
-    void AddGridItem(shared_ptr<GridItem> item);
+    void AddGridItem(shared_ptr<IGridItem> item);
     void ClearGridItems();
 
-    shared_ptr<GridItem> GetGridItem(int index);
-    shared_ptr<GridItem> GetSelectedGridItem();
+    shared_ptr<IGridItem> GetGridItem(int index);
+    shared_ptr<IGridItem> GetSelectedGridItem();
     int GetSelectedIndex();
     shared_ptr<Vec2> CalculateSize();
     friend shared_ptr<GridView> CreateGridView(const WString&, const int x, const int y, const int cellsX, const int cellsY, const int cellWidth, const int cellHeight, shared_ptr<Widget> parent, const GridViewStyle style);

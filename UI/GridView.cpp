@@ -24,14 +24,14 @@ void GridView::Draw(const int x, const int y, const int width, const int height)
         iVec2 pos;
         pos.x = x + cell.x;
         pos.y = y + cell.y;
-        AddBlock(pos, iVec2(m_cellWidth, m_cellHeight), color);
 
-        if (m_items.size() > i) {
-            auto item = m_items[i];
-            if (item != nullptr) {
-                this->RenderGridItem(item, pos.x, pos.y, m_cellWidth, m_cellHeight);
-            }
-        }
+        iVec2 lessPos = pos;
+        lessPos.x += 1;
+        lessPos.y += 1;
+        int lessSizeWidth = m_cellWidth - 2;
+        int lessSizeHeight = m_cellHeight - 2;
+
+        AddBlock(lessPos, iVec2(lessSizeWidth, lessSizeHeight), color);
 
         if (m_selectedIndex != i) {
             AddBlock(pos, iVec2(m_cellWidth, m_cellHeight), Vec4(0, 0, 0, 1), true);
@@ -39,19 +39,27 @@ void GridView::Draw(const int x, const int y, const int width, const int height)
         else {
             AddBlock(pos, iVec2(m_cellWidth, m_cellHeight), Vec4(0.16, 0.47, 1, 1), true);
         }
+
+        if (m_items.size() > i) {
+            auto item = m_items[i];
+            if (item != nullptr) {
+                this->RenderGridItem(item, lessPos.x, lessPos.y, lessSizeWidth, lessSizeHeight);
+            }
+        }
     }
 }
 
-void GridView::RenderGridItem(shared_ptr<GridItem> item, int x, int y, int width, int height)
+void GridView::RenderGridItem(shared_ptr<IGridItem> item, int x, int y, int width, int height)
 {
-    // Render the image
-    int block = AddBlock(item->GetItemIcon(), iVec2(x, y), Vec4(1));
-    blocks[block].size = iVec2(width, height);
+    //// Render the image
+    //int block = AddBlock(item->GetItemIcon(), iVec2(x, y), Vec4(1));
+    //blocks[block].size = iVec2(width, height);
 
-    if (item->GetGridItemStyle() != GRID_ITEM_TEXT_NO_BG) {
-        AddBlock(iVec2(x, y + (height - 18)), iVec2(width, 18), item->GetTextBackgroundColor());
-    }
-    AddBlock(this->GetText(), iVec2(x, y + (height - 15)), iVec2(width, 15), item->GetTextColor(), item->GetTextAlignment());
+    //if (item->GetGridItemStyle() != GRID_ITEM_TEXT_NO_BG) {
+    //    AddBlock(iVec2(x, y + (height - 18)), iVec2(width, 18), item->GetTextBackgroundColor());
+    //}
+    //AddBlock(item->GetText(), iVec2(x, y + (height - 15)), iVec2(width, 15), item->GetTextColor(), item->GetTextAlignment());
+    item->RenderItem(this, x, y, width, height);
 }
 
 /// <summary>
@@ -173,7 +181,7 @@ void GridView::AddBlockExt(shared_ptr<Pixmap> pixmap, const iVec2& position, con
 /// Adds an gridview item
 /// </summary>
 /// <param name="item"></param>
-void GridView::AddGridItem(shared_ptr<GridItem> item)
+void GridView::AddGridItem(shared_ptr<IGridItem> item)
 {
     m_items.push_back(item);
     this->Redraw();
@@ -192,7 +200,7 @@ void GridView::ClearGridItems()
 /// </summary>
 /// <param name="index"></param>
 /// <returns></returns>
-shared_ptr<GridItem> GridView::GetGridItem(int index)
+shared_ptr<IGridItem> GridView::GetGridItem(int index)
 {
     if (m_items.size() > index) {
         return m_items[index];
@@ -204,7 +212,7 @@ shared_ptr<GridItem> GridView::GetGridItem(int index)
 /// Gets the selected item
 /// </summary>
 /// <returns></returns>
-shared_ptr<GridItem> GridView::GetSelectedGridItem()
+shared_ptr<IGridItem> GridView::GetSelectedGridItem()
 {
     if (m_items.size() > m_selectedIndex) {
         return m_items[m_selectedIndex];
