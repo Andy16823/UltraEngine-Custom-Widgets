@@ -30,7 +30,12 @@ public:
     {
         if (button == MOUSE_LEFT) {
             this->SelectCell(x, y);
-            EmitEvent(EVENT_WIDGETACTION, Self());
+            EmitEvent(EVENT_WIDGETACTION, Self(), 1, x, y);
+            this->Redraw();
+        }
+        else if (button == MOUSE_RIGHT) {
+            this->SelectCell(x, y);
+            EmitEvent(EVENT_WIDGETACTION, Self(), 2, x, y);
             this->Redraw();
         }
     }
